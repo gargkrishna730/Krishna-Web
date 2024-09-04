@@ -23,15 +23,17 @@ jobs:
           tar -xzf arachni.tar.gz
           sudo mv arachni-1.5.1-0.5.12 /opt/arachni
           sudo ln -s /opt/arachni/bin/arachni /usr/local/bin/arachni
-          sudo ln -s /opt/arachni/bin/readlink_f.sh /usr/local/bin/readlink_f.sh  # Symlink for readlink_f.sh
-          sudo chmod +x /opt/arachni/bin/readlink_f.sh  # Ensure the script is executable
-          export PATH="/opt/arachni/bin:$PATH"  # Add Arachni to the PATH
+          sudo ln -s /opt/arachni/bin/readlink_f.sh /usr/local/bin/readlink_f.sh
+          sudo chmod +x /opt/arachni/bin/readlink_f.sh
+          export PATH="/opt/arachni/bin:$PATH"
 
-      - name: Run Arachni Scan
-        run: arachni https://krishnagarg.cloud/ --output-json=output.json
+      - name: Run Arachni Scan and Generate HTML Report
+        run: |
+          arachni https://krishnagarg.cloud/ --report-save-path=output.afr
+          /opt/arachni/bin/arachni_reporter output.afr --reporter=html:outfile=arachni_report.html
 
-      - name: Upload Arachni Scan Report
+      - name: Upload Arachni HTML Report
         uses: actions/upload-artifact@v3
         with:
-          name: Arachni Scan Report
-          path: output.json
+          name: Arachni HTML Report
+          path: arachni_report.html

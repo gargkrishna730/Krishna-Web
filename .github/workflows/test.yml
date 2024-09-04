@@ -1,29 +1,21 @@
-name: OWASP ZAP Scan
+name: Arachni Scan
 
 on:
   push:
     branches:
-      - demo
+      - main
 
 jobs:
-  zap_scan:
+  arachni_scan:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Run OWASP ZAP Full Scan
-        uses: zaproxy/action-full-scan@v0.4.0
-        with:
-          target: 'https://krishnagarg.cloud/'
-          docker_image: 'zaproxy/zap-stable'  # Correct Docker image
-          format: 'html'
-          report: 'zap_report.html'
-          fail_action: false  # Optional: set to false to avoid failing on warnings or info alerts
-          allow_issue_writing: true  # Optional: allow writing issues to GitHub
+      - name: Install Arachni
+        run: |
+          sudo apt-get update
+          sudo apt-get install arachni
 
-      - name: Upload OWASP ZAP Report
-        uses: actions/upload-artifact@v3
-        with:
-          name: OWASP ZAP Report
-          path: zap_report.html
+      - name: Run Arachni Scan
+        run: arachni https://krishnagarg.cloud/ --output-json=output.json

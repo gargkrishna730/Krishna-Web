@@ -12,10 +12,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install Arachni
+      - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install arachni
+          sudo apt-get install -y libxml2 libxslt-dev zlib1g-dev libcurl4-openssl-dev libsqlite3-dev
+
+      - name: Download Arachni
+        run: |
+          curl -L -o arachni.tar.gz https://github.com/Arachni/arachni/releases/download/v1.5.1/arachni-1.5.1-0.5.12-linux-x86_64.tar.gz
+          tar -xzf arachni.tar.gz
+          sudo mv arachni-1.5.1-0.5.12 /opt/arachni
+          sudo ln -s /opt/arachni/bin/arachni /usr/local/bin/arachni
 
       - name: Run Arachni Scan
         run: arachni https://krishnagarg.cloud/ --output-json=output.json
+
+      - name: Upload Arachni Scan Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: Arachni Scan Report
+          path: output.json

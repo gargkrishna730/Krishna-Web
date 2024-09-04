@@ -1,0 +1,40 @@
+name: Arachni Scan
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  arachni_scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Ruby and Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ruby-full build-essential libsqlite3-dev zlib1g-dev libxml2-dev libcurl4-openssl-dev libyaml-dev
+
+      - name: Download and Install Arachni
+        run: |
+          curl -L -o arachni.tar.gz https://github.com/Arachni/arachni/releases/download/v1.5.1/arachni-1.5.1-0.5.12-linux-x86_64.tar.gz
+          tar -xzf arachni.tar.gz
+          sudo mv arachni-1.5.1-0.5.12 /opt/arachni
+          sudo ln -s /opt/arachni/bin/arachni /usr/local/bin/arachni
+          sudo ln -s /opt/arachni/bin/readlink_f.sh /usr/local/bin/readlink_f.sh
+          sudo chmod +x /opt/arachni/bin/readlink_f.sh
+          export PATH="/opt/arachni/bin:$PATH"
+
+      - name: Run Arachni Scan and Generate HTML Report
+        run: |
+          arachni https://krishnagarg.cloud/ --report-save-path=output.afr
+          /opt/arachni/bin/arachni_reporter output.afr --reporter=html:outfile=arachni_report.zip
+          unzip arachni_report.zip -d arachni_report
+
+      - name: Upload Arachni HTML Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: Arachni HTML Report
+          path: arachni_report/index.html

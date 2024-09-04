@@ -1,4 +1,4 @@
-name: OWASP ZAP Scan
+name: OWASP ZAP Docker Scan
 
 on:
   push:
@@ -18,16 +18,9 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Run OWASP ZAP Full Scan
-        uses: zaproxy/action-full-scan@v0.4.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          target: 'https://krishnagarg.cloud/'
-          cmd_options: '-t https://krishnagarg.cloud/ -r zap_report.html' # Correctly format command options
-          docker_name: 'owasp/zap2docker-weekly' # Correct image name
-          issue_title: 'ZAP Full Scan Report'
-          fail_action: false  # Optional: prevent the action from failing on minor issues
-          allow_issue_writing: true  # Optional: allow writing issues to GitHub
+      - name: Run OWASP ZAP Docker Container
+        run: |
+          docker run --rm -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-full-scan.py -t https://krishnagarg.cloud/ -r zap_report.html
 
       - name: Upload OWASP ZAP Report
         uses: actions/upload-artifact@v3

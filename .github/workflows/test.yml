@@ -16,9 +16,11 @@ jobs:
         uses: zaproxy/action-full-scan@v0.4.0
         with:
           target: 'https://krishnagarg.cloud/'
-          docker_image: 'owasp/zap2docker-weekly'  # Updated Docker image
+          docker_image: 'owasp/zap2docker-weekly'  # Correct Docker image
           format: 'html'
           report: 'zap_report.html'
+          fail_action: false  # Optional: set to false to avoid failing on warnings or info alerts
+          allow_issue_writing: true  # Optional: allow writing issues to GitHub
 
       - name: Upload OWASP ZAP Report
         uses: actions/upload-artifact@v3

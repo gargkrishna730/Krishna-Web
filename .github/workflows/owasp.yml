@@ -1,0 +1,33 @@
+name: OWASP ZAP Scan
+
+on:
+  push:
+    branches:
+      - demo
+      
+jobs:
+  zap_scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Run OWASP ZAP Full Scan
+        uses: zaproxy/action-full-scan@v0.4.0
+        with:
+          target: 'https://krishnagarg.cloud/'
+          docker_image: 'owasp/zap2docker-weekly'
+          format: 'html'
+          report: 'zap_report.html'
+
+      - name: Upload OWASP ZAP Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: OWASP ZAP Report
+          path: zap_report.html

@@ -3,7 +3,7 @@ name: OWASP ZAP Scan
 on:
   push:
     branches:
-      - demo
+      - owasp
       
 jobs:
   zap_scan:

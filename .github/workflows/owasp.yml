@@ -23,8 +23,10 @@ jobs:
           # Pull the OWASP Nettacker Docker image
           docker pull owasp/nettacker
 
-          # Run OWASP Nettacker Docker container to perform the scan
-          docker run --rm -v $(pwd):/data owasp/nettacker /bin/sh -c "python nettacker.py -i https://krishnagarg.cloud/ -o /data/nettacker_report.html -m all -T 10 --silent"
+          # Run OWASP Nettacker Docker container to install dependencies and perform the scan
+          docker run --rm -v $(pwd):/data owasp/nettacker /bin/sh -c "\
+            pip install multiprocess && \
+            python nettacker.py -i https://krishnagarg.cloud/ -o /data/nettacker_report.html -m all -T 10 --silent"
 
       - name: Upload OWASP Nettacker Report
         uses: actions/upload-artifact@v3

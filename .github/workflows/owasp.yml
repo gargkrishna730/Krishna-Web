@@ -22,10 +22,10 @@ jobs:
         run: |
           # Pull the OWASP Nettacker Docker image
           docker pull owasp/nettacker
-
+          
           # Run OWASP Nettacker Docker container to install dependencies and perform the scan
           docker run --rm -v $(pwd):/data owasp/nettacker /bin/sh -c "\
-            if [ -f requirements.txt ]; then pip install -r requirements.txt; else pip install multiprocess numpy tomli yaml; fi && \
+            if [ -f requirements.txt ]; then pip install -r requirements.txt; else pip install multiprocess numpy==1.21.6 tomli==2.0.1 PyYAML; fi && \
             python nettacker.py -i https://krishnagarg.cloud/ -o /data/nettacker_report.html -m all -T 10 --silent"
 
       - name: Upload OWASP Nettacker Report

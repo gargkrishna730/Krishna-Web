@@ -1,12 +1,12 @@
-name: OWASP ZAP Scan
+name: OWASP Nettacker Scan
 
 on:
   push:
     branches:
       - owasp
-      
+
 jobs:
-  zap_scan:
+  nettacker_scan:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -18,16 +18,16 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Run OWASP ZAP Full Scan
-        uses: zaproxy/action-full-scan@v0.4.0
-        with:
-          target: 'https://krishnagarg.cloud/'
-          docker_image: 'owasp/nettacker'
-          format: 'html'
-          report: 'zap_report.html'
+      - name: Pull OWASP Nettacker Docker Image
+        run: docker pull owasp/nettacker
 
-      - name: Upload OWASP ZAP Report
+      - name: Run OWASP Nettacker Scan
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/data owasp/nettacker \
+          -i 'https://krishnagarg.cloud/' -o /data/nettacker_report.html -m all -L en
+
+      - name: Upload OWASP Nettacker Report
         uses: actions/upload-artifact@v3
         with:
-          name: OWASP ZAP Report
-          path: zap_report.html
+          name: OWASP Nettacker Report
+          path: nettacker_report.html

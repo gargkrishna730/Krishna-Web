@@ -3,7 +3,7 @@ name: Arachni Scan
 on:
   push:
     branches:
-      - demo
+      - master
 
 jobs:
   arachni_scan:

@@ -20,7 +20,7 @@ jobs:
 
       - name: Run OWASP ZAP Docker Container
         run: |
-          docker run --rm -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-full-scan.py -t https://krishnagarg.cloud/ -r zap_report.html
+          docker run --rm -v $(pwd):/zap/wrk/:rw -t owasp/nettacker zap-full-scan.py -t https://krishnagarg.cloud/ -r zap_report.html
 
       - name: Upload OWASP ZAP Report
         uses: actions/upload-artifact@v3

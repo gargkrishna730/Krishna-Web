@@ -30,10 +30,11 @@ jobs:
       - name: Run Arachni Scan and Generate HTML Report
         run: |
           arachni https://krishnagarg.cloud/ --report-save-path=output.afr
-          /opt/arachni/bin/arachni_reporter output.afr --reporter=html:outfile=arachni_report.html
+          /opt/arachni/bin/arachni_reporter output.afr --reporter=html:outfile=arachni_report.zip
+          unzip arachni_report.zip -d arachni_report
 
       - name: Upload Arachni HTML Report
         uses: actions/upload-artifact@v3
         with:
           name: Arachni HTML Report
-          path: arachni_report.html
+          path: arachni_report/index.html

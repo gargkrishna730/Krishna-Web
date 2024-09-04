@@ -1,12 +1,12 @@
-name: OWASP Nettacker Scan
+name: OWASP ZAP Scan
 
 on:
   push:
     branches:
       - owasp
-
+      
 jobs:
-  nettacker_scan:
+  zap_scan:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -18,18 +18,16 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Run OWASP Nettacker Scan
-        run: |
-          # Pull the OWASP Nettacker Docker image
-          docker pull owasp/nettacker
-          
-          # Run OWASP Nettacker Docker container to install dependencies and perform the scan
-          docker run --rm -v $(pwd):/data owasp/nettacker /bin/sh -c "\
-            if [ -f requirements.txt ]; then pip install -r requirements.txt; else pip install multiprocess numpy tomli PyYAML; fi && \
-            python nettacker.py -i https://krishnagarg.cloud/ -o /data/nettacker_report.html -m all -T 10 --silent"
+      - name: Run OWASP ZAP Full Scan
+        uses: zaproxy/action-full-scan@v0.4.0
+        with:
+          target: 'https://krishnagarg.cloud/'
+          docker_image: 'owasp/nettacker'
+          format: 'html'
+          report: 'zap_report.html'
 
-      - name: Upload OWASP Nettacker Report
+      - name: Upload OWASP ZAP Report
         uses: actions/upload-artifact@v3
         with:
-          name: OWASP Nettacker Report
-          path: nettacker_report.html
+          name: OWASP ZAP Report
+          path: zap_report.html

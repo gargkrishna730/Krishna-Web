@@ -1,0 +1,26 @@
+name: OWASP ZAP Scan
+
+on:
+  push:
+    branches:
+      - demo
+
+jobs:
+  zap_scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run OWASP ZAP Full Scan
+        uses: zaproxy/action-full-scan@v0.4.0
+        with:
+          target: 'https://krishnagarg.cloud/'
+          format: 'html'  # Specify the format for the report
+          report: 'zap_report.html'  # Name of the HTML report file
+
+      - name: Upload OWASP ZAP Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: OWASP ZAP Report
+          path: zap_report.html

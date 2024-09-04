@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - owasp
-      
+
 jobs:
   zap_scan:
     runs-on: ubuntu-latest
@@ -21,10 +21,13 @@ jobs:
       - name: Run OWASP ZAP Full Scan
         uses: zaproxy/action-full-scan@v0.4.0
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           target: 'https://krishnagarg.cloud/'
-          docker_image: 'owasp/zap2docker-weekly'
-          format: 'html'
-          report: 'zap_report.html'
+          cmd_options: '-t https://krishnagarg.cloud/ -r zap_report.html' # Correctly format command options
+          docker_name: 'owasp/zap2docker-weekly' # Correct image name
+          issue_title: 'ZAP Full Scan Report'
+          fail_action: false  # Optional: prevent the action from failing on minor issues
+          allow_issue_writing: true  # Optional: allow writing issues to GitHub
 
       - name: Upload OWASP ZAP Report
         uses: actions/upload-artifact@v3

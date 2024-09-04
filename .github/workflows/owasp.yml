@@ -23,11 +23,10 @@ jobs:
 
       - name: Run OWASP Nettacker Scan
         run: |
-          docker run --rm -v ${{ github.workspace }}:/data owasp/nettacker \
-          -i 'https://krishnagarg.cloud/' -o /data/nettacker_report.html -m all -L en
+          docker run --rm -v /home/runner/work/Krishna-Web/Krishna-Web:/data owasp/nettacker python nettacker.py -i 'https://krishnagarg.cloud/' -o /data/nettacker_report.html -m all -L en
 
       - name: Upload OWASP Nettacker Report
         uses: actions/upload-artifact@v3
         with:
           name: OWASP Nettacker Report
-          path: nettacker_report.html
+          path: Krishna-Web/nettacker_report.html
